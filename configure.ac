@@ -3,15 +3,16 @@
 
 AC_PREREQ(2.61)
 AC_INIT(centroid_fold, 0.0.10, no-define)
-AM_INIT_AUTOMAKE([-Wall foreign])
+AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AM_CONFIG_HEADER(config.h)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/centroid_fold.cpp])
 
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
 AC_LANG(C++)
-AC_CXX_HAVE_STL
+dnl AC_CXX_HAVE_STL
 AC_PROG_RANLIB
 AC_PROG_LN_S
 AC_PROG_AWK
@@ -44,7 +45,7 @@ if test "$enable_mersenne_twister" == "no"; then
 fi
 
 # boost libraries
-AX_BOOST_BASE(1.34, , AC_MSG_ERROR("the boost library is unavailable"))
+AX_BOOST_BASE(1.40, , AC_MSG_ERROR("the boost library is unavailable"))
 if test "x$BOOST_CPPFLAGS" != x; then
   CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
 fi
@@ -70,6 +71,7 @@ AC_ARG_WITH([vienna-rna], AS_HELP_STRING([--with-vienna-rna], [support Vienna RN
   if test "$with_vienna_rna" != "yes" && test "$with_vienna_rna" != "no" ; then
      CPPFLAGS="-I${with_vienna_rna}/include $CPPFLAGS"
      LDFLAGS="-L${with_vienna_rna}/lib $LDFLAGS"
+     LIBS="$LIBS -lRNA"
   fi
 )
 AC_CHECK_LIB(RNA, pf_fold)
@@ -78,8 +80,8 @@ AC_CHECK_FUNC(energy_of_structure,
 	      [AC_DEFINE([HAVE_VIENNA20], [], [have the Vienna RNA package version 1.8 or above])])
 
 # Checks for header files.
-AC_CHECK_HEADER([ViennaRNA/ribo.h],
-		[AC_DEFINE([HAVE_VIENNA18], [], [have the Vienna RNA package version 2.0 or above])])
+dnl AC_CHECK_HEADER([ViennaRNA/ribo.h],
+dnl		[AC_DEFINE([HAVE_VIENNA18], [], [have the Vienna RNA package version 2.0 or above])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
